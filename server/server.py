@@ -1,7 +1,5 @@
 import socket
 import argparse
-from PIL import Image
-import pickle
 
 text = 'This is a server for sending images'
 parser = argparse.ArgumentParser(description=text)
@@ -19,6 +17,7 @@ else:
 host = socket.gethostname()
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
 s.bind((host,port))
 s.listen(5)
 print(f'listening on address {host}:{port}')
@@ -26,12 +25,17 @@ print(f'listening on address {host}:{port}')
 clientSock, addr = s.accept()
 print(f'Connected to a client at addr: {addr}')
 
-"""CONVERTING IMAGE TO BYTES/PICKLING"""
-image = Image.open('1.png')
-imageBinary = pickle.dumps(image)
+"""REQUESTING IMAGE BY PATH"""
+path = clientSock.recv(1024).decode('utf-8')
+print(f'Path for file received as: {path}')
+"""END REQUESTING IMAGE BY PATH"""
 
+"""CONVERTING IMAGE TO BYTES"""
+image = open(path, 'rb')
+imageBinary = image.read()
 """END CONVERTING IMAGE TO BYTES"""
 
 msg = imageBinary
+print("Sending file")
 clientSock.sendall(msg)
 s.close()

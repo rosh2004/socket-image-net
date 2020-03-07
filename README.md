@@ -1,7 +1,4 @@
 # Net Image
 ## Sending image from server to client PYTHON
 
-1. Install pillow library using 
-```
-pip install pillow
-```
+after going to the directory client use python3 netimg.py -h to check put the usage
